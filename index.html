@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sirohi Job Portal | लेटेस्ट सरकारी नौकरी</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #0a3d62; --accent: #e74c3c; --bg: #f1f4f7; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 0; }
+        
+        .header { background: #0a3d62; color: white; padding: 25px 15px; text-align: center; border-bottom: 4px solid #e74c3c; }
+        .header h1 { margin: 0; font-size: 1.8rem; }
+        .header p { margin: 5px 0 0; opacity: 0.9; font-size: 0.9rem; }
+
+        .container { max-width: 800px; margin: 20px auto; padding: 0 15px; }
+        
+        /* सर्च बार */
+        .search-area { position: sticky; top: 10px; z-index: 100; margin-bottom: 20px; }
+        .search-box { width: 100%; padding: 15px 20px; border: 2px solid #0a3d62; border-radius: 50px; font-size: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); outline: none; }
+
+        .job-list { display: flex; flex-direction: column; gap: 12px; }
+        
+        /* जॉब कार्ड */
+        .job-card { background: white; padding: 15px 20px; border-radius: 10px; text-decoration: none; color: #333; display: flex; justify-content: space-between; align-items: center; border-left: 6px solid #0a3d62; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.3s; }
+        .job-card:hover { transform: translateX(5px); border-left-color: #e74c3c; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
+        .job-details h3 { margin: 0; color: #0000ff; font-size: 1.05rem; line-height: 1.4; }
+        .job-details span { font-size: 0.8rem; color: #777; font-weight: bold; text-transform: uppercase; }
+
+        .status-tag { padding: 6px 12px; border-radius: 5px; font-size: 0.8rem; font-weight: bold; min-width: 90px; text-align: center; }
+        .apply-now { background: #eef2f5; color: #0a3d62; border: 1px solid #0a3d62; }
+        .last-date { background: #fff5f5; color: #e74c3c; border: 1px solid #feb2b2; }
+
+        .no-result { text-align: center; padding: 40px; color: #888; display: none; }
+        
+        footer { text-align: center; padding: 30px; color: #666; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>लेटेस्ट सरकारी नौकरी</h1>
+    <p>जन सेवा केंद्र सैदपुर | मोबाइल: 7300789906</p>
+</div>
+
+<div class="container">
+    <div class="search-area">
+        <input type="text" id="searchInput" class="search-box" placeholder="नौकरी का नाम लिखें... (जैसे: UP Police, SSC, RPF)" onkeyup="searchJob()">
+    </div>
+
+    <div id="jobWrapper" class="job-list">
+        </div>
+
+    <div id="noResult" class="no-result">
+        <i class="fas fa-search fa-3x"></i><br><br>
+        क्षमा करें, इस नाम की कोई नौकरी नहीं मिली।
+    </div>
+</div>
+
+<footer>
+    © 2026 सिरोही जन सेवा केंद्र | डिजिटल सैदपुर
+</footer>
+
+<script>
+    /* =========================================
+       एडमिन सेक्शन: यहाँ से जॉब घटाएं या बढ़ाएं
+       =========================================
+       नियम:
+       1. नई जॉब के लिए { ... } वाला पूरा हिस्सा कॉपी करें।
+       2. title: नौकरी का नाम
+       3. info: विभाग का नाम (छोटा)
+       4. date: अंतिम तिथि या स्टेटस (जैसे: Admit Card Out)
+       5. link: फॉर्म भरने वाला लिंक
+    */
+
+    const myJobs = [
+        
+        { 
+            title: "UP Police Constable 2025-2026", 
+            info: "UPPBPB", 
+            date: "Check Now", 
+            link: "https://www.upprpb.in/#/auth/landing" 
+        },
+	{ 
+            title: "SSC GD Constable Recruitment 2025", 
+            info: "Staff Selection Commission", 
+            date: "12-01-2026", 
+            link: "https://ssc.gov.in" 
+        },
+        { 
+            title: "Railway RPF Constable & Sub Inspector", 
+            info: "RRB Recruitment", 
+            date: "15-05-2026", 
+            link: "https://indianrailways.gov.in" 
+        },
+	{ 
+            title: "Railway RPF Constable & Sub Inspector", 
+            info: "RRB Recruitment", 
+            date: "15-05-2026", 
+            link: "https://indianrailways.gov.in" 
+        },
+
+        { 
+            title: "Indian Navy Agniveer SSR/MR 01/2026", 
+            info: "Indian Navy", 
+            date: "20-02-2026", 
+            link: "#" 
+        },
+        { 
+            title: "UP Scholarship Online Form 2025-26", 
+            info: "UP Govt", 
+            date: "Active", 
+            link: "https://scholarship.up.gov.in/" 
+        },
+    ];
+
+    // जॉब्स को पेज पर दिखाने वाला फंक्शन
+    function displayJobs() {
+        const wrapper = document.getElementById('jobWrapper');
+        wrapper.innerHTML = myJobs.map(job => `
+            <a href="${job.link}" target="_blank" class="job-card">
+                <div class="job-details">
+                    <span>${job.info}</span>
+                    <h3>${job.title}</h3>
+                </div>
+                <div class="status-tag ${job.date.includes('-') ? 'last-date' : 'apply-now'}">
+                    ${job.date.includes('-') ? 'Last Date: ' + job.date : job.date}
+                </div>
+            </a>
+        `).join('');
+    }
+
+    // सर्च फंक्शन
+    function searchJob() {
+        let input = document.getElementById('searchInput').value.toLowerCase();
+        let cards = document.getElementsByClassName('job-card');
+        let found = false;
+
+        for (let i = 0; i < cards.length; i++) {
+            let title = cards[i].querySelector('h3').innerText.toLowerCase();
+            let info = cards[i].querySelector('span').innerText.toLowerCase();
+            if (title.includes(input) || info.includes(input)) {
+                cards[i].style.display = "flex";
+                found = true;
+            } else {
+                cards[i].style.display = "none";
+            }
+        }
+        document.getElementById('noResult').style.display = found ? "none" : "block";
+    }
+
+    // पेज लोड होते ही जॉब्स लोड करें
+    window.onload = displayJobs;
+</script>
+
+</body>
+</html>
